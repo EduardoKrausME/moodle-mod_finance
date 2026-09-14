@@ -1,0 +1,107 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_finance/calculator
+
+    Example context (json):
+    {
+        Aqui tem que criar o context em inglês
+    }
+}}
+<div class="mod-finance" data-region="finance-calculator" data-currency="{{currency}}"
+     data-label-result="{{labels.result}}" data-label-interest="{{labels.interest}}"
+     data-label-total="{{labels.totalamount}}" data-label-present="{{labels.presentvalue}}"
+     data-label-future="{{labels.futurevalue}}" data-label-installment="{{labels.installment}}"
+     data-label-totalpaid="{{labels.totalpaid}}" data-label-formula="{{labels.formula}}"
+     data-label-steps="{{labels.steps}}" data-label-invalid="{{labels.invalidvalues}}">
+
+    <div class="finance-mode-tabs" role="tablist" aria-label="{{#str}}calculations, mod_finance{{/str}}">
+        {{#modes}}
+            <button type="button" class="btn {{#active}}btn-primary{{/active}}{{^active}}btn-outline-secondary{{/active}} finance-mode-button"
+                    data-mode-button="{{key}}" role="tab" aria-selected="{{#active}}true{{/active}}{{^active}}false{{/active}}">
+                {{label}}
+            </button>
+        {{/modes}}
+    </div>
+
+    {{#modes}}
+        <section class="finance-panel {{^active}}d-none{{/active}}" data-mode-panel="{{key}}">
+            <div class="finance-panel-header">
+                <h3>{{label}}</h3>
+                <p>{{description}}</p>
+            </div>
+            <div data-fields="{{key}}"></div>
+        </section>
+    {{/modes}}
+
+    <div class="d-none" data-finance-field-templates>
+        <template data-template-mode="simple">
+            <div class="finance-grid">
+                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="2"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+            </div>
+            <small class="text-muted">{{ratehint}}</small>
+            <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
+            <div class="finance-result" data-result aria-live="polite"></div>
+        </template>
+
+        <template data-template-mode="compound">
+            <div class="finance-grid">
+                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+            </div>
+            <small class="text-muted">{{ratehint}}</small>
+            <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
+            <div class="finance-result" data-result aria-live="polite"></div>
+        </template>
+
+        <template data-template-mode="present">
+            <div class="finance-grid">
+                <label>{{labels.futureamount}}<input class="form-control" type="number" step="any" min="0" data-field="future" value="1500"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+            </div>
+            <small class="text-muted">{{ratehint}}</small>
+            <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
+            <div class="finance-result" data-result aria-live="polite"></div>
+        </template>
+
+        <template data-template-mode="future">
+            <div class="finance-grid">
+                <label>{{labels.presentamount}}<input class="form-control" type="number" step="any" min="0" data-field="present" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+            </div>
+            <small class="text-muted">{{ratehint}}</small>
+            <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
+            <div class="finance-result" data-result aria-live="polite"></div>
+        </template>
+
+        <template data-template-mode="payment">
+            <div class="finance-grid">
+                <label>{{labels.financedamount}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="10000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" min="0" data-field="rate" value="1.5"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="1" min="1" data-field="periods" value="12"></label>
+            </div>
+            <small class="text-muted">{{ratehint}}</small>
+            <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
+            <div class="finance-result" data-result aria-live="polite"></div>
+        </template>
+    </div>
+</div>
