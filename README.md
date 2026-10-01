@@ -1,22 +1,16 @@
 # mod_finance - Financial calculator
 
-A small Moodle activity module that provides educational financial calculators.
+Financial Calculator is a Moodle activity with educational calculators for common financial-mathematics problems.
 
 ## Calculations
 
-- Simple interest
-- Compound interest
-- Present value
-- Future value
-- Fixed installments using the Price system
+- simple interest;
+- compound interest;
+- present value;
+- future value;
+- fixed installments using the Price system.
 
-The teacher can enable or disable each calculation type per activity instance. Student calculations run in the browser
-and are not stored.
+The teacher chooses which calculation types are available in each activity. Students enter the values directly in the
+calculator, receive the result immediately in the browser and can use the activity as a guided aid during exercises.
 
-## Compatibility
-
-- Moodle 4.5+
-
-## Installation
-
-Copy the `finance` directory to `mod/finance`, visit Site administration > Notifications, and complete the installation.
+Student calculations are not stored.
