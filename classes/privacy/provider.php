@@ -16,6 +16,8 @@
 
 namespace mod_finance\privacy;
 
+use core_privacy\local\metadata\null_provider;
+
 /**
  * Privacy provider for mod_finance.
  *
@@ -23,7 +25,7 @@ namespace mod_finance\privacy;
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\null_provider {
+class provider implements null_provider {
     /**
      * Explains why the plugin stores no personal data.
      *

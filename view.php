@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_finance\event\course_module_viewed;
+
 require_once(__DIR__ . "/../../config.php");
 
 $id = required_param("id", PARAM_INT);
@@ -39,7 +41,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->requires->js_call_amd("mod_finance/calculator", "init");
 
-$event = \mod_finance\event\course_module_viewed::create([
+$event = course_module_viewed::create([
     "objectid" => $cm->id,
     "context" => $context,
 ]);

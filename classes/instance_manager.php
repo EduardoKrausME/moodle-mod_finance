@@ -16,6 +16,8 @@
 
 namespace mod_finance;
 
+use stdClass;
+
 /**
  * Handles activity instance persistence.
  *
@@ -27,10 +29,10 @@ class instance_manager {
     /**
      * Adds an activity instance.
      *
-     * @param \stdClass $data Activity data.
+     * @param stdClass $data Activity data.
      * @return int
      */
-    public static function add(\stdClass $data): int {
+    public static function add(stdClass $data): int {
         global $DB;
 
         $data->timecreated = time();
@@ -43,10 +45,10 @@ class instance_manager {
     /**
      * Updates an activity instance.
      *
-     * @param \stdClass $data Activity data.
+     * @param stdClass $data Activity data.
      * @return bool
      */
-    public static function update(\stdClass $data): bool {
+    public static function update(stdClass $data): bool {
         global $DB;
 
         $data->id = $data->instance;
@@ -76,10 +78,10 @@ class instance_manager {
     /**
      * Normalises checkbox values before saving.
      *
-     * @param \stdClass $data Activity data.
+     * @param stdClass $data Activity data.
      * @return void
      */
-    private static function normalise_flags(\stdClass $data): void {
+    private static function normalise_flags(stdClass $data): void {
         foreach (self::calculation_fields() as $field) {
             $data->{$field} = empty($data->{$field}) ? 0 : 1;
         }

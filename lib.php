@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_finance\instance_manager;
+
 /**
  * Returns the features supported by the activity.
  *
@@ -47,7 +49,7 @@ function finance_supports($feature) {
  * @return int
  */
 function finance_add_instance($data, $mform = null) {
-    return \mod_finance\instance_manager::add($data);
+    return instance_manager::add($data);
 }
 
 /**
@@ -58,7 +60,7 @@ function finance_add_instance($data, $mform = null) {
  * @return bool
  */
 function finance_update_instance($data, $mform = null) {
-    return \mod_finance\instance_manager::update($data);
+    return instance_manager::update($data);
 }
 
 /**
@@ -68,5 +70,5 @@ function finance_update_instance($data, $mform = null) {
  * @return bool
  */
 function finance_delete_instance($id) {
-    return \mod_finance\instance_manager::delete($id);
+    return instance_manager::delete($id);
 }

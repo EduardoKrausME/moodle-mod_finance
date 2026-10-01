@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use mod_finance\instance_manager;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once("{$CFG->dirroot}/course/moodleform_mod.php");
@@ -72,7 +74,7 @@ class mod_finance_mod_form extends moodleform_mod {
         $errors = parent::validation($data, $files);
         $enabled = false;
 
-        foreach (\mod_finance\instance_manager::calculation_fields() as $field) {
+        foreach (instance_manager::calculation_fields() as $field) {
             if (!empty($data[$field])) {
                 $enabled = true;
                 break;

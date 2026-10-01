@@ -50,7 +50,7 @@ class restore_finance_activity_structure_step extends restore_activity_structure
     protected function process_finance($data) {
         global $DB;
 
-        $data = (object) $data;
+        $data = (object)$data;
         $data->course = $this->get_courseid();
         $newitemid = $DB->insert_record("finance", $data);
         $this->apply_activity_instance($newitemid);

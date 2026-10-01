@@ -10,7 +10,8 @@ A small Moodle activity module that provides educational financial calculators.
 - Future value
 - Fixed installments using the Price system
 
-The teacher can enable or disable each calculation type per activity instance. Student calculations run in the browser and are not stored.
+The teacher can enable or disable each calculation type per activity instance. Student calculations run in the browser
+and are not stored.
 
 ## Compatibility
 

@@ -21,20 +21,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(["jquery"], function($) {
-    const parseNumber = function(panel, field) {
+define(["jquery"], function ($) {
+    const parseNumber = function (panel, field) {
         const value = parseFloat(panel.find('[data-field="' + field + '"]').val());
         return Number.isFinite(value) ? value : null;
     };
 
-    const formatNumber = function(value) {
+    const formatNumber = function (value) {
         return new Intl.NumberFormat(document.documentElement.lang || "pt-BR", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 6,
         }).format(value);
     };
 
-    const formatMoney = function(root, value) {
+    const formatMoney = function (root, value) {
         const symbol = root.data("currency") || "R$";
         return symbol + " " + new Intl.NumberFormat(document.documentElement.lang || "pt-BR", {
             minimumFractionDigits: 2,
@@ -42,19 +42,19 @@ define(["jquery"], function($) {
         }).format(value);
     };
 
-    const row = function(label, value) {
+    const row = function (label, value) {
         return '<div class="finance-result-row"><span>' + label + '</span><strong>' + value + '</strong></div>';
     };
 
-    const section = function(title, content) {
+    const section = function (title, content) {
         return '<div class="finance-calculation-section"><h4>' + title + '</h4>' + content + '</div>';
     };
 
-    const invalid = function(root, panel) {
+    const invalid = function (root, panel) {
         panel.find("[data-result]").html('<div class="alert alert-danger mb-0">' + root.data("label-invalid") + "</div>");
     };
 
-    const calculateSimple = function(root, panel) {
+    const calculateSimple = function (root, panel) {
         const principal = parseNumber(panel, "principal");
         const ratePercent = parseNumber(panel, "rate");
         const periods = parseNumber(panel, "periods");
@@ -81,7 +81,7 @@ define(["jquery"], function($) {
         );
     };
 
-    const calculateCompound = function(root, panel) {
+    const calculateCompound = function (root, panel) {
         const principal = parseNumber(panel, "principal");
         const ratePercent = parseNumber(panel, "rate");
         const periods = parseNumber(panel, "periods");
@@ -109,7 +109,7 @@ define(["jquery"], function($) {
         );
     };
 
-    const calculatePresent = function(root, panel) {
+    const calculatePresent = function (root, panel) {
         const future = parseNumber(panel, "future");
         const ratePercent = parseNumber(panel, "rate");
         const periods = parseNumber(panel, "periods");
@@ -134,7 +134,7 @@ define(["jquery"], function($) {
         );
     };
 
-    const calculateFuture = function(root, panel) {
+    const calculateFuture = function (root, panel) {
         const present = parseNumber(panel, "present");
         const ratePercent = parseNumber(panel, "rate");
         const periods = parseNumber(panel, "periods");
@@ -159,7 +159,7 @@ define(["jquery"], function($) {
         );
     };
 
-    const calculatePayment = function(root, panel) {
+    const calculatePayment = function (root, panel) {
         const principal = parseNumber(panel, "principal");
         const ratePercent = parseNumber(panel, "rate");
         const periods = parseNumber(panel, "periods");
@@ -204,7 +204,7 @@ define(["jquery"], function($) {
         );
     };
 
-    const calculate = function(root, panel, mode) {
+    const calculate = function (root, panel, mode) {
         const calculators = {
             simple: calculateSimple,
             compound: calculateCompound,
@@ -217,9 +217,9 @@ define(["jquery"], function($) {
         }
     };
 
-    const buildPanels = function(root) {
+    const buildPanels = function (root) {
         const templates = $("[data-finance-field-templates]");
-        root.find("[data-mode-panel]").each(function() {
+        root.find("[data-mode-panel]").each(function () {
             const panel = $(this);
             const mode = panel.data("mode-panel");
             const source = templates.find('template[data-template-mode="' + mode + '"]');
@@ -230,8 +230,8 @@ define(["jquery"], function($) {
         });
     };
 
-    const bindEvents = function(root) {
-        root.on("click", "[data-mode-button]", function() {
+    const bindEvents = function (root) {
+        root.on("click", "[data-mode-button]", function () {
             const button = $(this);
             const mode = button.data("mode-button");
 
@@ -244,19 +244,19 @@ define(["jquery"], function($) {
             root.find('[data-mode-panel="' + mode + '"]').removeClass("d-none");
         });
 
-        root.on("click", "[data-calculate]", function() {
+        root.on("click", "[data-calculate]", function () {
             const panel = $(this).closest("[data-mode-panel]");
             calculate(root, panel, panel.data("mode-panel"));
         });
 
-        root.on("input", "input[data-field]", function() {
+        root.on("input", "input[data-field]", function () {
             const panel = $(this).closest("[data-mode-panel]");
             calculate(root, panel, panel.data("mode-panel"));
         });
     };
 
-    const init = function() {
-        $("[data-region=finance-calculator]").each(function() {
+    const init = function () {
+        $("[data-region=finance-calculator]").each(function () {
             const root = $(this);
             buildPanels(root);
             bindEvents(root);

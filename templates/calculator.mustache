@@ -31,8 +31,10 @@
 
     <div class="finance-mode-tabs" role="tablist" aria-label="{{#str}}calculations, mod_finance{{/str}}">
         {{#modes}}
-            <button type="button" class="btn {{#active}}btn-primary{{/active}}{{^active}}btn-outline-secondary{{/active}} finance-mode-button"
-                    data-mode-button="{{key}}" role="tab" aria-selected="{{#active}}true{{/active}}{{^active}}false{{/active}}">
+            <button type="button"
+                    class="btn {{#active}}btn-primary{{/active}}{{^active}}btn-outline-secondary{{/active}} finance-mode-button"
+                    data-mode-button="{{key}}" role="tab"
+                    aria-selected="{{#active}}true{{/active}}{{^active}}false{{/active}}">
                 {{label}}
             </button>
         {{/modes}}
@@ -51,9 +53,12 @@
     <div class="d-none" data-finance-field-templates>
         <template data-template-mode="simple">
             <div class="finance-grid">
-                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="1000"></label>
-                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="2"></label>
-                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0"
+                                                  data-field="principal" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate"
+                                                 value="2"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0"
+                                                data-field="periods" value="12"></label>
             </div>
             <small class="text-muted">{{ratehint}}</small>
             <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
@@ -62,9 +67,12 @@
 
         <template data-template-mode="compound">
             <div class="finance-grid">
-                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="1000"></label>
-                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
-                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+                <label>{{labels.principal}}<input class="form-control" type="number" step="any" min="0"
+                                                  data-field="principal" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate"
+                                                 value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0"
+                                                data-field="periods" value="12"></label>
             </div>
             <small class="text-muted">{{ratehint}}</small>
             <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
@@ -73,9 +81,12 @@
 
         <template data-template-mode="present">
             <div class="finance-grid">
-                <label>{{labels.futureamount}}<input class="form-control" type="number" step="any" min="0" data-field="future" value="1500"></label>
-                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
-                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+                <label>{{labels.futureamount}}<input class="form-control" type="number" step="any" min="0"
+                                                     data-field="future" value="1500"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate"
+                                                 value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0"
+                                                data-field="periods" value="12"></label>
             </div>
             <small class="text-muted">{{ratehint}}</small>
             <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
@@ -84,9 +95,12 @@
 
         <template data-template-mode="future">
             <div class="finance-grid">
-                <label>{{labels.presentamount}}<input class="form-control" type="number" step="any" min="0" data-field="present" value="1000"></label>
-                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate" value="1"></label>
-                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0" data-field="periods" value="12"></label>
+                <label>{{labels.presentamount}}<input class="form-control" type="number" step="any" min="0"
+                                                      data-field="present" value="1000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" data-field="rate"
+                                                 value="1"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="any" min="0"
+                                                data-field="periods" value="12"></label>
             </div>
             <small class="text-muted">{{ratehint}}</small>
             <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
@@ -95,9 +109,12 @@
 
         <template data-template-mode="payment">
             <div class="finance-grid">
-                <label>{{labels.financedamount}}<input class="form-control" type="number" step="any" min="0" data-field="principal" value="10000"></label>
-                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" min="0" data-field="rate" value="1.5"></label>
-                <label>{{labels.periods}}<input class="form-control" type="number" step="1" min="1" data-field="periods" value="12"></label>
+                <label>{{labels.financedamount}}<input class="form-control" type="number" step="any" min="0"
+                                                       data-field="principal" value="10000"></label>
+                <label>{{labels.rate}} (%)<input class="form-control" type="number" step="any" min="0" data-field="rate"
+                                                 value="1.5"></label>
+                <label>{{labels.periods}}<input class="form-control" type="number" step="1" min="1" data-field="periods"
+                                                value="12"></label>
             </div>
             <small class="text-muted">{{ratehint}}</small>
             <button type="button" class="btn btn-primary mt-3" data-calculate>{{labels.calculate}}</button>
