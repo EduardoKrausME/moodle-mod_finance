@@ -21,25 +21,61 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(["jquery"], function ($) {
+define(["jquery", "core/str"], function ($, Str) {
+    let notation = {};
+
+    const notationKeys = [
+        "formula_compound",
+        "formula_future",
+        "formula_payment",
+        "formula_payment_zero",
+        "formula_present",
+        "formula_simple",
+        "formula_symbol_future",
+        "formula_symbol_interest",
+        "formula_symbol_payment",
+        "formula_symbol_periods",
+        "formula_symbol_present",
+        "formula_symbol_principal",
+        "formula_symbol_rate",
+        "formula_symbol_total",
+    ];
+
+    const loadNotation = function () {
+        const requests = notationKeys.map(function (key) {
+            return {key: key, component: "mod_finance"};
+        });
+
+        return Str.get_strings(requests).then(function (values) {
+            notationKeys.forEach(function (key, index) {
+                notation[key] = values[index];
+            });
+        });
+    };
+
     const parseNumber = function (panel, field) {
         const value = parseFloat(panel.find('[data-field="' + field + '"]').val());
         return Number.isFinite(value) ? value : null;
     };
 
+    const getLocale = function () {
+        return document.documentElement.lang || undefined;
+    };
+
     const formatNumber = function (value) {
-        return new Intl.NumberFormat(document.documentElement.lang || "pt-BR", {
+        return new Intl.NumberFormat(getLocale(), {
             minimumFractionDigits: 2,
             maximumFractionDigits: 6,
         }).format(value);
     };
 
     const formatMoney = function (root, value) {
-        const symbol = root.data("currency") || "R$";
-        return symbol + " " + new Intl.NumberFormat(document.documentElement.lang || "pt-BR", {
+        const symbol = root.data("currency") || "";
+        const amount = new Intl.NumberFormat(getLocale(), {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         }).format(value);
+        return symbol ? symbol + " " + amount : amount;
     };
 
     const row = function (label, value) {
@@ -54,6 +90,15 @@ define(["jquery"], function ($) {
         panel.find("[data-result]").html('<div class="alert alert-danger mb-0">' + root.data("label-invalid") + "</div>");
     };
 
+    const rateStep = function (ratePercent, rate) {
+        return notation.formula_symbol_rate + " = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate);
+    };
+
+    const factorStep = function (rate, periods, factor) {
+        return "(1 + " + notation.formula_symbol_rate + ")^" + notation.formula_symbol_periods + " = (1 + " +
+            formatNumber(rate) + ")^" + formatNumber(periods) + " = " + formatNumber(factor);
+    };
+
     const calculateSimple = function (root, panel) {
         const principal = parseNumber(panel, "principal");
         const ratePercent = parseNumber(panel, "rate");
@@ -66,17 +111,21 @@ define(["jquery"], function ($) {
         const rate = ratePercent / 100;
         const interest = principal * rate * periods;
         const total = principal + interest;
-        const formula = "J = C × i × n";
+        const principalSymbol = notation.formula_symbol_principal;
+        const interestSymbol = notation.formula_symbol_interest;
+        const totalSymbol = notation.formula_symbol_total;
         const steps = [
-            "i = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate),
-            "J = " + formatNumber(principal) + " × " + formatNumber(rate) + " × " + formatNumber(periods) + " = " + formatNumber(interest),
-            "M = C + J = " + formatNumber(principal) + " + " + formatNumber(interest) + " = " + formatNumber(total),
+            rateStep(ratePercent, rate),
+            interestSymbol + " = " + formatNumber(principal) + " × " + formatNumber(rate) + " × " +
+                formatNumber(periods) + " = " + formatNumber(interest),
+            totalSymbol + " = " + principalSymbol + " + " + interestSymbol + " = " + formatNumber(principal) +
+                " + " + formatNumber(interest) + " = " + formatNumber(total),
         ];
 
         panel.find("[data-result]").html(
             row(root.data("label-interest"), formatMoney(root, interest)) +
             row(root.data("label-total"), formatMoney(root, total)) +
-            section(root.data("label-formula"), "<code>" + formula + "</code>") +
+            section(root.data("label-formula"), "<code>" + notation.formula_simple + "</code>") +
             section(root.data("label-steps"), "<ol><li>" + steps.join("</li><li>") + "</li></ol>")
         );
     };
@@ -94,17 +143,21 @@ define(["jquery"], function ($) {
         const factor = Math.pow(1 + rate, periods);
         const total = principal * factor;
         const interest = total - principal;
+        const principalSymbol = notation.formula_symbol_principal;
+        const interestSymbol = notation.formula_symbol_interest;
+        const totalSymbol = notation.formula_symbol_total;
         const steps = [
-            "i = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate),
-            "(1 + i)^n = (1 + " + formatNumber(rate) + ")^" + formatNumber(periods) + " = " + formatNumber(factor),
-            "M = " + formatNumber(principal) + " × " + formatNumber(factor) + " = " + formatNumber(total),
-            "J = M - C = " + formatNumber(total) + " - " + formatNumber(principal) + " = " + formatNumber(interest),
+            rateStep(ratePercent, rate),
+            factorStep(rate, periods, factor),
+            totalSymbol + " = " + formatNumber(principal) + " × " + formatNumber(factor) + " = " + formatNumber(total),
+            interestSymbol + " = " + totalSymbol + " - " + principalSymbol + " = " + formatNumber(total) + " - " +
+                formatNumber(principal) + " = " + formatNumber(interest),
         ];
 
         panel.find("[data-result]").html(
             row(root.data("label-total"), formatMoney(root, total)) +
             row(root.data("label-interest"), formatMoney(root, interest)) +
-            section(root.data("label-formula"), "<code>M = C × (1 + i)<sup>n</sup></code>") +
+            section(root.data("label-formula"), "<code>" + notation.formula_compound + "</code>") +
             section(root.data("label-steps"), "<ol><li>" + steps.join("</li><li>") + "</li></ol>")
         );
     };
@@ -121,15 +174,16 @@ define(["jquery"], function ($) {
         const rate = ratePercent / 100;
         const factor = Math.pow(1 + rate, periods);
         const present = future / factor;
+        const presentSymbol = notation.formula_symbol_present;
         const steps = [
-            "i = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate),
-            "(1 + i)^n = (1 + " + formatNumber(rate) + ")^" + formatNumber(periods) + " = " + formatNumber(factor),
-            "VP = " + formatNumber(future) + " ÷ " + formatNumber(factor) + " = " + formatNumber(present),
+            rateStep(ratePercent, rate),
+            factorStep(rate, periods, factor),
+            presentSymbol + " = " + formatNumber(future) + " ÷ " + formatNumber(factor) + " = " + formatNumber(present),
         ];
 
         panel.find("[data-result]").html(
             row(root.data("label-present"), formatMoney(root, present)) +
-            section(root.data("label-formula"), "<code>VP = VF ÷ (1 + i)<sup>n</sup></code>") +
+            section(root.data("label-formula"), "<code>" + notation.formula_present + "</code>") +
             section(root.data("label-steps"), "<ol><li>" + steps.join("</li><li>") + "</li></ol>")
         );
     };
@@ -146,15 +200,16 @@ define(["jquery"], function ($) {
         const rate = ratePercent / 100;
         const factor = Math.pow(1 + rate, periods);
         const future = present * factor;
+        const futureSymbol = notation.formula_symbol_future;
         const steps = [
-            "i = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate),
-            "(1 + i)^n = (1 + " + formatNumber(rate) + ")^" + formatNumber(periods) + " = " + formatNumber(factor),
-            "VF = " + formatNumber(present) + " × " + formatNumber(factor) + " = " + formatNumber(future),
+            rateStep(ratePercent, rate),
+            factorStep(rate, periods, factor),
+            futureSymbol + " = " + formatNumber(present) + " × " + formatNumber(factor) + " = " + formatNumber(future),
         ];
 
         panel.find("[data-result]").html(
             row(root.data("label-future"), formatMoney(root, future)) +
-            section(root.data("label-formula"), "<code>VF = VP × (1 + i)<sup>n</sup></code>") +
+            section(root.data("label-formula"), "<code>" + notation.formula_future + "</code>") +
             section(root.data("label-steps"), "<ol><li>" + steps.join("</li><li>") + "</li></ol>")
         );
     };
@@ -181,16 +236,16 @@ define(["jquery"], function ($) {
 
         const totalPaid = payment * periods;
         const interest = totalPaid - principal;
-        const formula = rate === 0 ? "PMT = VP ÷ n" : "PMT = VP × i ÷ [1 - (1 + i)^(-n)]";
-        const steps = [
-            "i = " + formatNumber(ratePercent) + "% ÷ 100 = " + formatNumber(rate),
-        ];
+        const paymentSymbol = notation.formula_symbol_payment;
+        const steps = [rateStep(ratePercent, rate)];
 
         if (rate === 0) {
-            steps.push("PMT = " + formatNumber(principal) + " ÷ " + formatNumber(periods) + " = " + formatNumber(payment));
+            steps.push(paymentSymbol + " = " + formatNumber(principal) + " ÷ " + formatNumber(periods) + " = " + formatNumber(payment));
         } else {
-            steps.push("1 - (1 + i)^(-n) = " + formatNumber(denominator));
-            steps.push("PMT = " + formatNumber(principal) + " × " + formatNumber(rate) + " ÷ " + formatNumber(denominator) + " = " + formatNumber(payment));
+            steps.push("1 - (1 + " + notation.formula_symbol_rate + ")^(-" + notation.formula_symbol_periods + ") = " +
+                formatNumber(denominator));
+            steps.push(paymentSymbol + " = " + formatNumber(principal) + " × " + formatNumber(rate) + " ÷ " +
+                formatNumber(denominator) + " = " + formatNumber(payment));
         }
         steps.push(root.data("label-totalpaid") + " = " + formatNumber(payment) + " × " + formatNumber(periods) + " = " + formatNumber(totalPaid));
         steps.push(root.data("label-interest") + " = " + formatNumber(totalPaid) + " - " + formatNumber(principal) + " = " + formatNumber(interest));
@@ -199,7 +254,7 @@ define(["jquery"], function ($) {
             row(root.data("label-installment"), formatMoney(root, payment)) +
             row(root.data("label-totalpaid"), formatMoney(root, totalPaid)) +
             row(root.data("label-interest"), formatMoney(root, interest)) +
-            section(root.data("label-formula"), "<code>" + formula + "</code>") +
+            section(root.data("label-formula"), "<code>" + (rate === 0 ? notation.formula_payment_zero : notation.formula_payment) + "</code>") +
             section(root.data("label-steps"), "<ol><li>" + steps.join("</li><li>") + "</li></ol>")
         );
     };
@@ -256,10 +311,12 @@ define(["jquery"], function ($) {
     };
 
     const init = function () {
-        $("[data-region=finance-calculator]").each(function () {
-            const root = $(this);
-            buildPanels(root);
-            bindEvents(root);
+        return loadNotation().then(function () {
+            $("[data-region=finance-calculator]").each(function () {
+                const root = $(this);
+                buildPanels(root);
+                bindEvents(root);
+            });
         });
     };
 

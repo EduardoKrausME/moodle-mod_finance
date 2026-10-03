@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot . '/mod/finance/backup/moodle2/backup_finance_stepslib.php');
 
 /**
  * backup_finance_activity_task
@@ -51,6 +52,9 @@ class backup_finance_activity_task extends backup_activity_task {
      * @return string
      */
     public static function encode_content_links($content) {
-        return $content;
+        global $CFG;
+
+        $baseurl = preg_quote($CFG->wwwroot . '/mod/finance/view.php?id=', '/');
+        return preg_replace('/(' . $baseurl . ')([0-9]+)/', '$@FINANCEVIEWBYID*$2@$', $content);
     }
 }

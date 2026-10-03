@@ -42,9 +42,10 @@ $PAGE->set_context($context);
 $PAGE->requires->js_call_amd("mod_finance/calculator", "init");
 
 $event = course_module_viewed::create([
-    "objectid" => $cm->id,
+    "objectid" => $finance->id,
     "context" => $context,
 ]);
+$event->add_record_snapshot("finance", $finance);
 $event->add_record_snapshot("course_modules", $cm);
 $event->add_record_snapshot("course", $course);
 $event->trigger();
