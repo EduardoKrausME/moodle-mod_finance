@@ -67,4 +67,15 @@ class restore_finance_activity_task extends restore_activity_task {
             new restore_decode_rule("FINANCEVIEWBYID", "/mod/finance/view.php?id=$1", "course_module"),
         ];
     }
+
+    /**
+     * Defines restore log rules.
+     *
+     * mod_finance does not currently restore any legacy log entries.
+     *
+     * @return restore_log_rule[]
+     */
+    public static function define_restore_log_rules() {
+        return [];
+    }
 }
